@@ -30,7 +30,7 @@ private:
     // Input: current node, current word formed so far, results vector to store words
     // Output: none (modifies results vector by reference)
     // Purpose: Recursively find all complete words starting from the given node
-    void findAllWords(TrieNode* node, string currentWord, vector<string>& results) {
+    void findAllWords(TrieNode* node, string currentWord, vector<string>& results) {// --ramy--
         // TODO: Implement this function
     }
 
@@ -39,7 +39,7 @@ public:
     // Input: none
     // Output: none
     // Purpose: Initialize the Trie with a root node
-    Trie() {
+    Trie() {// --Ramy--
         // TODO: Implement this function
     }
     
@@ -47,7 +47,7 @@ public:
     // Input: word to insert (string)
     // Output: none
     // Purpose: Add a word to the Trie by creating nodes for each character
-    void insert(string word) {
+    void insert(string word) {// --Mazen--
         // TODO: Implement this function
     }
     
@@ -55,7 +55,7 @@ public:
     // Input: word to search for (string)
     // Output: boolean indicating if the word exists
     // Purpose: Check if the complete word exists in the Trie
-    bool search(string word) {
+    bool search(string word) {// --Malak--
         // TODO: Implement this function
         return false; // placeholder
     }
@@ -64,7 +64,7 @@ public:
     // Input: prefix to check (string)
     // Output: boolean indicating if any word has this prefix
     // Purpose: Verify if the prefix exists in the Trie (doesn't need to be a complete word)
-    bool startsWith(string prefix) {
+    bool startsWith(string prefix) {// --Marwan--
         // TODO: Implement this function
         return false; // placeholder
     }
@@ -73,7 +73,7 @@ public:
     // Input: prefix to complete (string)
     // Output: vector of strings that start with the prefix
     // Purpose: Find all complete words that begin with the given prefix
-    vector<string> autocomplete(string prefix) {
+    vector<string> autocomplete(string prefix) {// --Karim--
         vector<string> suggestions;
         // TODO: Implement this function
         return suggestions;
