@@ -74,8 +74,18 @@ public:
     // Output: boolean indicating if any word has this prefix
     // Purpose: Verify if the prefix exists in the Trie (doesn't need to be a complete word)
     bool startsWith(string prefix) {// --Marwan--
-        // TODO: Implement this function
-        return false; // placeholder
+       TrieNode* node =root;
+        for(char c:prefix){
+        int index= c-'a';
+        if(!node->children[index]) 
+        {
+            return false;
+        }else{
+            node=node->children[index];
+        }
+
+       }
+        return true; 
     }
     
     // Get all words that start with the given prefix
