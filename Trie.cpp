@@ -40,7 +40,7 @@ public:
     // Output: none
     // Purpose: Initialize the Trie with a root node
     Trie() {// --Ramy--
-        // TODO: Implement this function
+        root = new TrieNode();
     }
     
     // Insert a word into the Trie
