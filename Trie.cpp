@@ -77,7 +77,7 @@ public:
        TrieNode* node =root;
         for(char c:prefix){
         int index= c-'a';
-        if(!node->children[index]) 
+        if(node->children[index]!=nullptr) 
         {
             return false;
         }else{
@@ -111,6 +111,11 @@ public:
             }
         }
         return longestWord;
+    }
+    int countWords(){
+        vector<string> allWords;
+        findAllWords(root, "", allWords);
+        return allWords.size();
     }
 };
 
