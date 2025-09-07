@@ -87,6 +87,21 @@ public:
         // TODO: Implement this function
         return suggestions;
     }
+    string findLongestWord() {
+        vector<string> allWords;
+        findAllWords(root, "", allWords);
+        
+        if (allWords.empty()) {
+            return "";
+        }
+        string longestWord = allWords[0];
+        for (const string& word : allWords) {
+            if (word.length() > longestWord.length()) {
+                longestWord = word;
+            }
+        }
+        return longestWord;
+    }
 };
 
 // Main function
