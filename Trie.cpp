@@ -77,7 +77,7 @@ public:
        TrieNode* node =root;
         for(char c:prefix){
         int index= c-'a';
-        if(node->children[index]!=nullptr) 
+        if(node->children[index]==nullptr) 
         {
             return false;
         }else{
