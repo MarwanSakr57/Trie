@@ -95,8 +95,35 @@ public:
     vector<string> autocomplete(string prefix) {// --Karim--
         vector<string> suggestions;
         // TODO: Implement this function
+        TrieNode* node = root;
+
+        for(int i = 0; i<prefix.size(); i++)
+        {
+        	if(node->children[prefix[i]] == nullptr)
+        	{
+        		return suggestions; // no prefix found
+        	}
+
+        	node = node -> children[prefix[i]];
+        }
+
+        findAllWords(node,prefix,suggestions);
+
         return suggestions;
     }
+
+    void spellChecker(string word) {
+        if (search(word))
+        {
+            cout << word << " is spelled correctly.\n";
+        }
+        else
+        {
+            cout << word << " is NOT found.\n";
+         }
+    }
+
+
     string findLongestWord() {
         vector<string> allWords;
         findAllWords(root, "", allWords);
