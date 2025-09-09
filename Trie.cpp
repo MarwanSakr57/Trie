@@ -65,8 +65,16 @@ public:
     // Output: boolean indicating if the word exists
     // Purpose: Check if the complete word exists in the Trie
     bool search(string word) {// --Malak--
-        // TODO: Implement this function
-        return false; // placeholder
+        TrieNode* node = root;
+        for (char c : word) {
+            int idx = c - 'a';
+            if (idx < 0 || idx >= 26) return false;  
+            if (node->children[idx]== nullptr){ 
+                return false;
+            }
+            node = node->children[idx];      
+        }
+        return node->isEndOfWord;
     }
     
     // Check if any word starts with the given prefix
