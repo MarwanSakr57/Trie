@@ -30,6 +30,35 @@ private:
     // Input: current node, current word formed so far, results vector to store words
     // Output: none (modifies results vector by reference)
     // Purpose: Recursively find all complete words starting from the given node
+    static bool hasNoChildren(const TrieNode* n) {
+        for (int i = 0; i < 26; ++i) if (n->children[i]) return false;
+        return true;
+    }
+
+    static bool eraseHelper(TrieNode*& node, const string& word, int depth) {
+        if (!node) return false;                       
+
+        if (depth == (int)word.size()) {           
+            if (!node->isEndOfWord) return false; 
+            node->isEndOfWord = false;
+            if (hasNoChildren(node)) {                
+                delete node;
+                node = nullptr;
+            }
+            return true;
+        }
+
+        int idx = word[depth] - 'a';
+        if (idx < 0 || idx >= 26) return false;        
+
+        bool removed = eraseHelper(node->children[idx], word, depth + 1);
+        if (node && depth > 0 && !node->isEndOfWord && hasNoChildren(node)) {
+            delete node;
+            node = nullptr;
+        }
+        return removed;
+    }
+
     void findAllWords(TrieNode* node, string currentWord, vector<string>& results) {// --ramy--
         if (node->isEndOfWord) {
             results.push_back(currentWord);
@@ -65,8 +94,16 @@ public:
     // Output: boolean indicating if the word exists
     // Purpose: Check if the complete word exists in the Trie
     bool search(string word) {// --Malak--
-        // TODO: Implement this function
-        return false; // placeholder
+        TrieNode* node = root;
+        for (char c : word) {
+            int idx = c - 'a';
+            if (idx < 0 || idx >= 26) return false;  
+            if (node->children[idx]== nullptr){ 
+                return false;
+            }
+            node = node->children[idx];      
+        }
+        return node->isEndOfWord;
     }
     
     // Check if any word starts with the given prefix
@@ -94,24 +131,17 @@ public:
     // Purpose: Find all complete words that begin with the given prefix
     vector<string> autocomplete(string prefix) {// --Karim--
         vector<string> suggestions;
-        // TODO: Implement this function
         TrieNode* node = root;
 
-        for(int i = 0; i<prefix.size(); i++)
-        {
-        	if(node->children[prefix[i]] == nullptr)
-        	{
-        		return suggestions; // no prefix found
-        	}
-
-        	node = node -> children[prefix[i]];
+        for (char c : prefix) {
+            int idx = c - 'a';
+            if (idx < 0 || idx >= 26) return suggestions;         // fix: guard range
+            if (!node->children[idx]) return suggestions;         // fix: proper index
+            node = node->children[idx];
         }
-
-        findAllWords(node,prefix,suggestions);
-
+        findAllWords(node, prefix, suggestions);
         return suggestions;
     }
-
     void spellChecker(string word) {
         if (search(word))
         {
@@ -143,6 +173,9 @@ public:
         vector<string> allWords;
         findAllWords(root, "", allWords);
         return allWords.size();
+    }
+    bool removeWord(const string& word) {
+        return eraseHelper(root, word, 0);
     }
 };
 
@@ -281,6 +314,50 @@ int main() {
         bool found = trie.search(word);
         cout << "Search '" << word << "': " << (found ? "FOUND" : "NOT FOUND") << endl;
     }
+        // ===============================
+    // 7. Testing removal operations
+    // ===============================
+    cout << "\n7. Testing removal operations:" << endl;
+    cout << "================================" << endl;
+
+    auto show = [&](const string& w) {
+        cout << "Search '" << w << "': " << (trie.search(w) ? "FOUND" : "NOT FOUND") << endl;
+    };
+
+    // Sanity before removals
+    show("apple"); show("application"); show("appetizer");
+    show("banana"); show("bandana"); show("banister");
+    show("kiwi");
+
+    // 7.1 Remove a leaf word
+    cout << "\n7.1 Remove leaf 'kiwi': ";
+    cout << (trie.removeWord("kiwi") ? "REMOVED" : "NOT FOUND") << endl;
+    show("kiwi");  // expect NOT FOUND
+
+    // 7.2 Remove a middle word that shares prefix with others
+    cout << "\n7.2 Remove 'banana' (prefix siblings exist): ";
+    cout << (trie.removeWord("banana") ? "REMOVED" : "NOT FOUND") << endl;
+    show("banana");   // expect NOT FOUND
+    show("bandana");  // expect FOUND (should remain)
+    show("banister"); // expect FOUND (should remain)
+
+    // 7.3 Insert 'app' (prefix of others), then remove only 'app'
+    trie.insert("app");
+    cout << "\n7.3 Add and remove 'app' (keep longer words):" << endl;
+    show("app");          // expect FOUND
+    cout << (trie.removeWord("app") ? "REMOVED" : "NOT FOUND") << endl;
+    show("app");          // expect NOT FOUND
+    show("apple");        // expect FOUND
+    show("application");  // expect FOUND
+    show("appetizer");    // expect FOUND
+
+    // 7.4 Remove a non-existent word
+    cout << "\n7.4 Remove 'berry' (non-existent): ";
+    cout << (trie.removeWord("berry") ? "REMOVED" : "NOT FOUND") << endl;
+
+    // 7.5 Remove empty string
+    cout << "\n7.5 Remove empty string: ";
+    cout << (trie.removeWord("") ? "REMOVED" : "NOT FOUND") << endl;
     
     cout << "\n=== ALL TESTS COMPLETED ===" << endl;
     
