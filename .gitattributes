@@ -1,0 +1,26 @@
+# Auto-detect text files and normalize line endings
+* text=auto
+
+# Always normalize source files to LF in repo, but checkout as CRLF on Windows
+*.cpp text eol=crlf
+*.h   text eol=crlf
+
+# Force other text files (like .gitignore, config, etc.) to LF for consistency
+*.sh   text eol=lf
+*.yml  text eol=lf
+*.md   text eol=lf
+
+# Treat build artifacts as binary (no diffs)
+*.exe binary
+*.dll binary
+*.obj binary
+*.o   binary
+*.so  binary
+*.a   binary
+
+# VSCode settings
+.vscode/* text eol=crlf
+
+# Improve GitHub diffs for C++
+*.cpp diff=cpp
+*.h   diff=cpp
