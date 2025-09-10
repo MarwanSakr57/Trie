@@ -6,8 +6,8 @@ using namespace std;
 // Each node in the Trie
 class TrieNode {
 public:
-    // Each node has up to 26 children (for each letter)
-    TrieNode* children[26];
+    // Each node has up to 52 children (for each letter)
+    TrieNode *children[52];
     
     // Marks if this node completes a word
     bool isEndOfWord;
@@ -15,7 +15,7 @@ public:
     // Constructor
     TrieNode() {
         isEndOfWord = false;
-        for (int i = 0; i < 26; i++) {
+        for (int i = 0; i < 52; i++) {
             children[i] = nullptr;
         }
     }
@@ -26,12 +26,22 @@ class Trie {
 private:
     TrieNode* root;
     
-    // Helper function to find all words from a node
-    // Input: current node, current word formed so far, results vector to store words
-    // Output: none (modifies results vector by reference)
-    // Purpose: Recursively find all complete words starting from the given node
+
+    static int getIndex(char c) {
+        if (c >= 'a' && c <= 'z') {
+            return c - 'a';          
+        } else if (c >= 'A' && c <= 'Z') {
+            return 26 + (c - 'A');    
+        }
+        return -1; 
+    }
+    static char getChar(int index) {
+        if (index >= 0 && index < 26) return 'a' + index;
+        if (index >= 26 && index < 52) return 'A' + (index - 26);
+        return '?';
+    }
     static bool hasNoChildren(const TrieNode* n) {
-        for (int i = 0; i < 26; ++i) if (n->children[i]) return false;
+        for (int i = 0; i < 52; ++i) if (n->children[i]) return false;
         return true;
     }
 
@@ -48,8 +58,8 @@ private:
             return true;
         }
 
-        int idx = word[depth] - 'a';
-        if (idx < 0 || idx >= 26) return false;        
+        int idx = getIndex(word[depth]);
+        if (idx ==-1) return false;        
 
         bool removed = eraseHelper(node->children[idx], word, depth + 1);
         if (node && depth > 0 && !node->isEndOfWord && hasNoChildren(node)) {
@@ -58,15 +68,18 @@ private:
         }
         return removed;
     }
-
+    // Helper function to find all words from a node
+    // Input: current node, current word formed so far, results vector to store words
+    // Output: none (modifies results vector by reference)
+    // Purpose: Recursively find all complete words starting from the given node
     void findAllWords(TrieNode* node, string currentWord, vector<string>& results) {// --ramy--
         if (node->isEndOfWord) {
             results.push_back(currentWord);
         }
         
-        for (int i = 0; i < 26; i++) {
+        for (int i = 0; i < 52; i++) {
             if (node->children[i] != nullptr) {
-                char nextChar = 'a' + i;
+                char nextChar = getChar(i);
                 findAllWords(node->children[i], currentWord + nextChar, results);
             }
         }
@@ -89,7 +102,7 @@ public:
         TrieNode *node = root;
         for (char c : word)
         {
-            int index = c - 'a';
+            int index = getIndex(c);
             if (node->children[index] == nullptr)
             {
                 node->children[index] = new TrieNode();
@@ -106,11 +119,8 @@ public:
     bool search(string word) {// --Malak--
         TrieNode* node = root;
         for (char c : word) {
-            int idx = c - 'a';
-            if (idx < 0 || idx >= 26) return false;  
-            if (node->children[idx]== nullptr){ 
-                return false;
-            }
+            int idx = getIndex(c);
+        if (idx == -1 || !node->children[idx]) return false;
             node = node->children[idx];      
         }
         return node->isEndOfWord;
@@ -123,8 +133,8 @@ public:
     bool startsWith(string prefix) {// --Marwan--
        TrieNode* node =root;
         for(char c:prefix){
-        int index= c-'a';
-        if(node->children[index]==nullptr) 
+        int index= getIndex(c);
+        if(index==-1||node->children[index]==nullptr) 
         {
             return false;
         }else{
@@ -144,9 +154,8 @@ public:
         TrieNode* node = root;
 
         for (char c : prefix) {
-            int idx = c - 'a';
-            if (idx < 0 || idx >= 26) return suggestions;         // fix: guard range
-            if (!node->children[idx]) return suggestions;         // fix: proper index
+            int idx = getIndex(c);
+            if (idx==-1||!node->children[idx]) return suggestions;         
             node = node->children[idx];
         }
         findAllWords(node, prefix, suggestions);
@@ -185,6 +194,7 @@ public:
         return allWords.size();
     }
     bool removeWord(const string& word) {
+        if (word.empty()) return false;
         return eraseHelper(root, word, 0);
     }
 };
@@ -324,7 +334,7 @@ int main() {
         bool found = trie.search(word);
         cout << "Search '" << word << "': " << (found ? "FOUND" : "NOT FOUND") << endl;
     }
-        // ===============================
+    // ===============================
     // 7. Testing removal operations
     // ===============================
     cout << "\n7. Testing removal operations:" << endl;
