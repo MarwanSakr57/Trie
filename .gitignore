@@ -1,0 +1,19 @@
+# IDE settings
+.vscode/
+*.code-workspace
+
+# Compiled binaries
+*.exe
+*.out
+*.obj
+*.o
+*.so
+*.dll
+*.a
+
+# Build folders
+/build/
+bin/
+
+# Temporary test files
+tempCodeRunnerFile.cpp
